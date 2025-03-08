@@ -1,5 +1,7 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form
+from PIL import Image
+from io import BytesIO
+
 
 # SmolVLM - Instruct
 from transformers import AutoProcessor, AutoModelForVision2Seq
@@ -30,14 +32,11 @@ model = Qwen2VLForConditionalGeneration.from_pretrained(
 
 processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct")
 
-# Request Schema
-class InferenceRequest(BaseModel):
-    prompt: str
 
 # processing image
 app = FastAPI()
 @app.post("/caption_image")
-async def caption_image(file: UploadFile = File(...)):
+async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
     print('RECEIVED!')
     # Read the uploaded frame
     image_bytes = await file.read()
@@ -50,7 +49,7 @@ async def caption_image(file: UploadFile = File(...)):
             "role": "user",
             "content": [
                 {"type": "image"},
-                {"type": "text", "text": "Can you describe this image?"}
+                {"type": "text", "text": prompt}
             ]
         }
     ]
@@ -63,25 +62,27 @@ async def caption_image(file: UploadFile = File(...)):
         generated_ids,
         skip_special_tokens=True,
     )
-    print(generated_texts)
     return {
         'response': generated_texts
     }
 
 
 @app.post("/decide_action")
-async def predict(request: InferenceRequest, file: UploadFile = File(...)):
+async def predict(prompt: str = Form(...), file: UploadFile = File(...)):
     try:
+        # Read image bytes
         image_bytes = await file.read()
-        nparr = np.frombuffer(image_bytes, np.uint8)
-        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # Convert to PIL Image
+        image = Image.open(BytesIO(image_bytes)).convert("RGB")
+
         # Format input as per Qwen's expected structure
         messages = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": frame},
-                    {"type": "text", "text": request.prompt},
+                    {"type": "image", "image": image},  # Use PIL image
+                    {"type": "text", "text": prompt},
                 ],
             }
         ]
@@ -110,6 +111,7 @@ async def predict(request: InferenceRequest, file: UploadFile = File(...)):
         return {"response": generated_text}
 
     except Exception as e:
+        import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 
