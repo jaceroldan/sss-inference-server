@@ -32,7 +32,6 @@ processor = AutoProcessor.from_pretrained("Qwen/Qwen2-VL-2B-Instruct")
 
 # Request Schema
 class InferenceRequest(BaseModel):
-    image_url: str
     prompt: str
 
 # processing image
@@ -57,7 +56,7 @@ async def caption_image(file: UploadFile = File(...)):
     ]
     prompt = processor.apply_chat_template(messages, add_generation_prompt=True)
     inputs = processor(text=prompt, images=[frame], return_tensors="pt")
-    inputs = inputs.to(DEVICE)
+    inputs = inputs.to(SMOLVLM_DEVICE)
 
     generated_ids = model.generate(**inputs, max_new_tokens=256)
     generated_texts = processor.batch_decode(
@@ -71,14 +70,17 @@ async def caption_image(file: UploadFile = File(...)):
 
 
 @app.post("/decide_action")
-async def predict(request: InferenceRequest):
+async def predict(request: InferenceRequest, file: UploadFile = File(...)):
     try:
+        image_bytes = await file.read()
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         # Format input as per Qwen's expected structure
         messages = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": request.image_url},
+                    {"type": "image", "image": frame},
                     {"type": "text", "text": request.prompt},
                 ],
             }
