@@ -134,6 +134,32 @@ async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
     }
 
 
+@app.post("/plan_actions")
+async def plan_actions(goal: str = Form(...), caption: str = Form(...)):
+    """
+    Generates a strict sequence of steps based on the goal and environment description.
+    """
+    prompt = f"""
+    You are an AI planning agent for a virtual grocery environment.
+    Your task is to break down the following goal into a strict sequence of actions for the agent to execute.
+    
+    Goal: {goal}
+    Environment: {caption}
+    
+    Provide the steps in a structured format, such as:
+    1. Move forward 1 unit.
+    2. Turn right 90 degrees.
+    3. Move forward 2 units.
+    4. Pick up the object.
+    """
+    
+    inputs = tokenizer(prompt, return_tensors="pt").to(HERMES_DEVICE)
+    output_ids = hermes_model.generate(**inputs, max_new_tokens=256)
+    response = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+    
+    return {"plan": response}
+
+
 @app.post("/decide_action")
 async def predict(prompt: str = Form(...), file: UploadFile = File(...)):
     try:
