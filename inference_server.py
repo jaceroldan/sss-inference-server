@@ -69,28 +69,40 @@ from io import BytesIO
 
 
 # SmolVLM - Instruct
-from transformers import AutoProcessor, AutoModelForVision2Seq
+from transformers import AutoProcessor, AutoModelForVision2Seq, AutoModelForImageTextToText
+# Hermes
 from transformers import AutoTokenizer, LlamaForCausalLM
-# Qwen usage
-from transformers import Qwen2VLForConditionalGeneration, AutoProcessor
-from qwen_vl_utils import process_vision_info  # Make sure this is available
 
 import torch
 import cv2
 
 import numpy as np
-
+############################ 
+# SMOLVLM
+############################
 SMOLVLM_DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
-processor = AutoProcessor.from_pretrained("HuggingFaceTB/SmolVLM-Instruct")
-smol_vlm_model = AutoModelForVision2Seq.from_pretrained("HuggingFaceTB/SmolVLM-Instruct",
-                                               torch_dtype=torch.bfloat16,
-                                               _attn_implementation="flash_attention_2" if SMOLVLM_DEVICE == "cuda" else "eager").to(SMOLVLM_DEVICE)
-smol_vlm_model.to(SMOLVLM_DEVICE)
+# Commented out to reduce memory usage
+# processor = AutoProcessor.from_pretrained("HuggingFaceTB/SmolVLM-Instruct")
+# smol_vlm_model = AutoModelForVision2Seq.from_pretrained("HuggingFaceTB/SmolVLM-Instruct",
+#                                                torch_dtype=torch.bfloat16,
+#                                                _attn_implementation="flash_attention_2" if SMOLVLM_DEVICE == "cuda" else "eager")
+# smol_vlm_model.to(SMOLVLM_DEVICE)
 
+processor_light = AutoProcessor.from_pretrained("HuggingFaceTB/SmolVLM2-256M-Video-Instruct")
+smol_vlm_model_light = AutoModelForImageTextToText.from_pretrained(
+    "HuggingFaceTB/SmolVLM2-256M-Video-Instruct",
+    torch_dtype=torch.bfloat16,
+    device_map="cuda")
+smol_vlm_model_light.to(SMOLVLM_DEVICE)
+
+
+############################ 
+# Hermes
+############################
 tokenizer = AutoTokenizer.from_pretrained('NousResearch/Hermes-2-Pro-Llama-3-8B', trust_remote_code=True)
 
-HERMES_DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
+HERMES_DEVICE = "cuda:7" if torch.cuda.is_available() else "cpu"
 hermes_model = LlamaForCausalLM.from_pretrained(
     "NousResearch/Hermes-2-Pro-Llama-3-8B",
     torch_dtype=torch.float16,
@@ -102,6 +114,7 @@ hermes_model = LlamaForCausalLM.from_pretrained(
 
 # processing image
 app = FastAPI()
+
 @app.post("/caption_image")
 async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
     print('RECEIVED!')
@@ -134,6 +147,59 @@ async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
     }
 
 
+@app.post("/caption_image_light")
+async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
+    print('RECEIVED!')
+    # Read the uploaded frame
+    image_bytes = await file.read()
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # Convert OpenCV BGR image to PIL RGB image
+    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    pil_image = Image.fromarray(frame_rgb)
+
+    # Perform inference
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "image", "image": pil_image},
+                {"type": "text", "text": prompt}
+            ]
+        }
+    ]
+    # Step 1: Format the chat template
+    prompt_text = processor_light.apply_chat_template(
+        messages,
+        add_generation_prompt=True,
+        tokenize=False  # <-- Make sure to keep tokenize=False here
+    )
+
+    # Step 2: Tokenize + encode the inputs correctly with images
+    inputs = processor_light(
+        text=prompt_text,
+        images=[pil_image],
+        return_tensors="pt"
+    ).to(SMOLVLM_DEVICE)
+
+    # Optional: Adjust dtype if using bfloat16
+    if smol_vlm_model_light.dtype == torch.bfloat16:
+        inputs = {k: v.to(torch.bfloat16) if v.dtype == torch.float32 else v for k, v in inputs.items()}
+
+    # Step 3: Generate
+    with torch.no_grad():
+        generated_ids = smol_vlm_model_light.generate(**inputs, max_new_tokens=256)
+        generated_texts = processor_light.batch_decode(
+            generated_ids,
+            skip_special_tokens=True,
+        )
+
+    return {
+        'response': generated_texts
+    }
+
+
 @app.post("/plan_actions")
 async def plan_actions(goal: str = Form(...), caption: str = Form(...)):
     """
@@ -154,7 +220,8 @@ async def plan_actions(goal: str = Form(...), caption: str = Form(...)):
     """
     
     inputs = tokenizer(prompt, return_tensors="pt").to(HERMES_DEVICE)
-    output_ids = hermes_model.generate(**inputs, max_new_tokens=256)
+    with torch.inference_mode():
+        output_ids = hermes_model.generate(**inputs, max_new_tokens=256)
     response = tokenizer.decode(output_ids[0], skip_special_tokens=True)
     
     return {"plan": response}
