@@ -1,66 +1,203 @@
-def transform_agent(translate_x: float, translate_y: float, translate_z: float, degrees_x: float, degrees_y: float, degrees_z: float):
+def move_forward():
     """
-    Transforms the agent by the specified translation and rotation with respect to the environment.
-    
-    Args:
-        translate_x: Move the agent translate_x units to the right if this is positive, or to the left if negative.
-        translate_y: Move the agent translate_y units up if this is positive, or down if negative.
-        translate_z: Move the agent translate_z units forward if this is positive, or backward if negative.
-        degrees_x: Rotate the agent's camera degrees_x units down if this is positive, or to up if negative.
-        degrees_y: Rotate the agent's camera degrees_y units to the right if this is positive, or to the left if negative.
-        degrees_z: Rotate agent's camera degrees_z units counterclockwise on its axis if this is positive, or clockwise if negative.
-    Returns:
-        The new position of the agent (x, y, z) with respect to the environment and its current camera rotation (x, y, z).
-    """
-    return 1
+    Moves the agent 0.1 units forward.
 
-def transform_hands(
-        left_translate_x: float, left_translate_y: float, left_translate_z: float,
-        left_degrees_x: float, left_degrees_y: float, left_degrees_z: float,
-        right_translate_x: float, right_translate_y: float, right_translate_z: float,
-        right_degrees_x: float, right_degrees_y: float, right_degrees_z: float):
-    """
-    Transforms the agent's left hand and right hand by the specified translation and rotation with respect to the environment.
-    
-    Args:
-        left_translate_x: Move the agent's left hand left_translate_x units to the right if this is positive, or to the left if negative.
-        left_translate_y: Move the agent's left hand left_translate_y units up if this is positive, or down if negative.
-        left_translate_z: Move the agent's left hand left_translate_z units forward if this is positive, or backward if negative.
-        left_degrees_x: Rotate the agent's left hand rotation left_degrees_x units down if this is positive, or up if negative.
-        left_degrees_y: Rotate the agent's left hand rotation left_degrees_y units to the right if this is positive, or to the left if negative.
-        left_degrees_z: Rotate the agent's left hand rotation left_degrees_z units counterclockwise on its axis if this is positive, or clockwise if negative.
-        right_translate_x: Move the agent's right hand right_translate_x units to the right if this is positive, or to the left if negative.
-        right_translate_y: Move the agent's right hand right_translate_y units up if this is positive, or down if negative.
-        right_translate_z: Move the agent's right hand right_translate_z units forward if this is positive, or backward if negative.
-        right_degrees_x: Rotate the agent's right hand rotation right_degrees_x units down if this is positive, or up if negative.
-        right_degrees_y: Rotate the agent's right hand rotation right_degrees_y units to the right if this is positive, or to the left if negative.
-        right_degrees_z: Rotate the agent's right hand rotation right_degrees_z units counterclockwise on its axis if this is positive, or clockwise if negative.
     Returns:
-        The new position of the agent's hands (x, y, z for both hands) with respect to the environment and both hands' current camera rotation (x, y, z for both).
+        The amount of movement by the agent in the forward direction.
     """
-    return 1
+    return 0.1
+
+
+def move_backward():
+    """
+    Moves the agent 0.1 units backward.
+
+    Returns:
+        The amount of movement by the agent in the backward direction.
+    """
+    return 0.1
+
+
+def move_left():
+    """
+    Moves the agent 0.1 units to the left.
+
+    Returns:
+        The amount of movement by the agent in the leftward direction.
+    """
+    return 0.1
+
+
+def move_right():
+    """
+    Moves the agent 0.1 units to the right.
+
+    Returns:
+        The amount of movement by the agent in the rightward direction.
+    """
+    return 0.1
+
+
+def pan_left():
+    """
+    Pans the camera's agent to look 2.5 degrees to the left.
+
+    Returns:
+        The amount of camera panning by the agent in the right-to-left orientation.
+    """
+    return 2.5
+
+
+def pan_right():
+    """
+    Pans the camera's agent to look 2.5 degrees to the right.
+
+    Returns:
+        The amount of camera panning by the agent in the left-to-right orientation.
+    """
+    return 2.5
+
+
+def pan_up():
+    """
+    Pans the camera's agent to look 2.5 degrees upwards.
+
+    Returns:
+        The amount of camera panning by the agent in the down-to-up orientation.
+    """
+    return 2.5
+
+
+def pan_down():
+    """
+    Pans the camera's agent to look 2.5 degrees downwards.
+
+    Returns:
+        The amount of camera panning by the agent in the up-to-down orientation.
+    """
+    return 2.5
+
+
+def extend_left_hand_forward():
+    """
+    Extends the agent's left hand forward by 0.025 units.
+
+    Returns:
+        The amount of movement by the left hand in the forward direction.
+    """
+    return 0.025
+
+
+def extend_right_hand_forward():
+    """
+    Extends the agent's right hand forward by 0.025 units.
+
+    Returns:
+        The amount of movement by the right hand in the forward direction.
+    """
+    return 0.025
+
+
+def pull_left_hand_backward():
+    """
+    Pulls the agent's left hand backward by 0.025 units.
+
+    Returns:
+        The amount of movement by the left hand in the backward direction.
+    """
+    return 0.025
+
+
+def pull_right_hand_backward():
+    """
+    Pulls the agent's right hand backward by 0.025 units.
+
+    Returns:
+        The amount of movement by the right hand in the backward directino.
+    """
+    return 0.025
+
+
+def raise_left_hand():
+    """
+    Raises the agent's left hand by 0.025 units.
+
+    Returns:
+        The amount of movement by the left hand in the down-to-up direction.
+    """
+    return 0.025
+
+
+def raise_right_hand():
+    """
+    Raises the agent's right hand by 0.025 units.
+
+    Returns:
+        The amount of movement by the right hand in the down-to-up direction.
+    """
+    return 0.025
+
+
+def lower_left_hand():
+    """
+    Lowers the agent's left hand by 0.025 units.
+
+    Returns:
+        The amount of movement by the left hand in the up-to-down direction.
+    """
+    return 0.025
+
+
+def lower_right_hand():
+    """
+    Lowers the agent's right hand by 0.025 units.
+
+    Returns:
+        The amount of movement by the right hand in the up-to-down direction.
+    """
+    return 0.025
+
 
 def toggle_left_grip():
     """
-    Toggles the grip of the left hand. Will successfully toggle from false to true if an XR Grab Interactable object collides with the left hand.
+    Toggles the grip of the left hand.
 
     Returns:
         True if an object has been grabbed and False, otherwise.
     """
-    return 1
+    return True
 
 
 def toggle_right_grip():
     """
-    Toggles the grip of the left hand. Will successfully toggle from false to true if an XR Grab Interactable object collides with the left hand.
+    Toggles the grip of the right hand.
 
     Returns:
         True if an object has been grabbed and False, otherwise.
     """
-    return 1
+    return True
 
 
-tools = [transform_agent, transform_hands, toggle_left_grip, toggle_right_grip]
+tools = [
+    move_forward,
+    move_backward,
+    move_left,
+    move_right,
+    pan_left,
+    pan_right,
+    pan_up,
+    pan_down,
+    extend_left_hand_forward,
+    extend_right_hand_forward,
+    pull_left_hand_backward,
+    pull_right_hand_backward,
+    raise_left_hand,
+    raise_right_hand,
+    lower_left_hand,
+    lower_right_hand,
+    toggle_left_grip,
+    toggle_right_grip
+]
 
 
 from fastapi import FastAPI, File, UploadFile, HTTPException, Form
@@ -112,41 +249,9 @@ hermes_model = LlamaForCausalLM.from_pretrained(
     use_flash_attention_2=True
 )
 
-# processing image
 app = FastAPI()
 
-@app.post("/caption_image")
-async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
-    print('RECEIVED!')
-    # Read the uploaded frame
-    image_bytes = await file.read()
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-    # Perform inference
-    messages = [
-        {
-            "role": "user",
-            "content": [
-                {"type": "image"},
-                {"type": "text", "text": prompt}
-            ]
-        }
-    ]
-    prompt = processor.apply_chat_template(messages, add_generation_prompt=True)
-    inputs = processor(text=prompt, images=[frame], return_tensors="pt")
-    inputs = inputs.to(SMOLVLM_DEVICE)
-
-    generated_ids = smol_vlm_model.generate(**inputs, max_new_tokens=256)
-    generated_texts = processor.batch_decode(
-        generated_ids,
-        skip_special_tokens=True,
-    )
-    return {
-        'response': generated_texts
-    }
-
-
+# processing images
 @app.post("/caption_image_light")
 async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
     print('RECEIVED!')
@@ -200,6 +305,7 @@ async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
     }
 
 
+# Verbose set of steps to achieve a goal.
 @app.post("/plan_actions")
 async def plan_actions(goal: str = Form(...), caption: str = Form(...)):
     """
@@ -213,10 +319,30 @@ async def plan_actions(goal: str = Form(...), caption: str = Form(...)):
     Environment: {caption}
     
     Provide the steps in a structured format, such as:
-    1. Move forward 1 unit.
-    2. Turn right 90 degrees.
-    3. Move forward 2 units.
-    4. Pick up the object.
+    1. Move forward 0.1 units.
+    2. Turn right 2.5 degrees.
+    3. Move forward 0.1 units.
+    4. Pick up the object with the left hand.
+
+    The agent is able to do the following actions
+    * move_forward - Moves the agent 0.1 units forward.
+    * move_backward - Transforms the agent 0.1 units backward.
+    * move_left - Moves the agent 0.1 units to the left.
+    * move_right - Moves the agent 0.1 units to the right.
+    * pan_left - Pans the camera's agent to look 2.5 degrees to the left.
+    * pan_right - Pans the camera's agent to look 2.5 degrees to the right.
+    * pan_up - Pans the camera's agent to look 2.5 degrees upwards. 
+    * pan_down - Pans the camera's agent to look 2.5 degrees downwards.
+    * extend_left_hand_forward - Extends the agent's left hand forward by 0.025 units.
+    * extend_right_hand_forward - Extends the agent's right hand forward by 0.025 units.
+    * pull_left_hand_backward - Pulls the agent's left hand backward by 0.025 units.
+    * pull_right_hand_backward - Pulls the agent's right hand backward by 0.025 units.
+    * raise_left_hand - Raises the agent's left hand by 0.025 units.
+    * raise_right_hand - Raises the agent's right hand by 0.025 units.
+    * lower_left_hand - Lowers the agent's left hand by 0.025 units.
+    * lower_right_hand - Lowers the agent's right hand by 0.025 units.
+    * toggle_left_grip - Toggles the grip of the left hand.
+    * toggle_right_grip - Toggles the grip of the right hand.
     """
     
     inputs = tokenizer(prompt, return_tensors="pt").to(HERMES_DEVICE)
@@ -227,6 +353,7 @@ async def plan_actions(goal: str = Form(...), caption: str = Form(...)):
     return {"plan": response}
 
 
+# Have the agent select which tools.
 @app.post("/decide_action")
 async def predict(prompt: str = Form(...), file: UploadFile = File(...)):
     try:
