@@ -1,7 +1,15 @@
 import base64
+import io
+
+import torch
 from fastapi import FastAPI, File, UploadFile, Form
+from pydantic import BaseModel
+from PIL import Image
 from openai import OpenAI
 import httpx
+import clip
+
+from utils import locate_object_in_frame
 
 from dotenv import load_dotenv
 import os
@@ -14,6 +22,13 @@ LETTA_RAILWAY_PASSWORD = os.getenv("LETTA_RAILWAY_PASSWORD")
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 app = FastAPI()
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model, preprocess = clip.load("ViT-B/32", device=device)
+
+
+class CLIPRequest(BaseModel):
+    prompt: str
+
 
 @app.post("/caption_image")
 async def caption_image(prompt: str = Form(...), file: UploadFile = File(...)):
@@ -345,6 +360,40 @@ async def decide_action(prompt: str = Form(...), file: UploadFile = File(...)):
     )
 
     return {"response": response.choices[0].message.tool_calls if response.choices[0].message.tool_calls else response.choices[0].message.content}
+
+
+@app.post("/find-object/")
+async def find_object(prompt: str, file: UploadFile = File(...)):
+    # Read the image
+    image_bytes = await file.read()
+    image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+
+    # Preprocess
+    image_input = preprocess(image).unsqueeze(0).to(device)
+
+    # Encode text
+    text_input = clip.tokenize([prompt]).to(device)
+    text_features = model.encode_text(text_input)
+
+    # Encode image
+    image_features = model.encode_image(image_input)
+
+    # Compare
+    similarity = torch.cosine_similarity(image_features, text_features)
+    
+    return {"similarity": similarity.item()}
+
+
+@app.post("/locate-object/")
+async def locate_object(prompt: str, file: UploadFile = File(...)):
+    # Read and load image
+    image_bytes = await file.read()
+    image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+
+    # Locate object
+    result = locate_object_in_frame(image, prompt)
+
+    return result
 
 
 if __name__ == "__main__":
