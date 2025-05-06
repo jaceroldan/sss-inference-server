@@ -52,115 +52,156 @@ tools = [
     {
         "type": "function",
         "function": {
-            "name": "move_forward",
-            "description": "Moves the agent 0.1 units forward.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "move_forward",
+        "description": "Moves the agent forward by (units × 0.1) units.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "units": {
+                    "type": "integer",
+                    "description": "Number of times to move 0.1 units forward."
+                }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "move_backward",
-            "description": "Moves the agent 0.1 units backward.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "move_backward",
+        "description": "Moves the agent backward by (units × 0.1) units.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to move 0.1 units backward."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "move_left",
-            "description": "Moves the agent 0.1 units to the left.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "move_left",
+        "description": "Moves the agent to the left by (units × 0.1) units.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to move 0.1 units to the left."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "move_right",
-            "description": "Moves the agent 0.1 units to the right.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "move_right",
+        "description": "Moves the agent to the right by (units × 0.1) units.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to move 0.1 units to the right."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "pan_left",
-            "description": "Pans the agent's camera 2.5 degrees to the left.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "pan_left",
+        "description": "Pans the agent's camera to the left by (units × 2.5) degrees.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to pan 2.5 degrees left."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "pan_right",
-            "description": "Pans the agent's camera 2.5 degrees to the right.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "pan_right",
+        "description": "Pans the agent's camera to the right by (units × 2.5) degrees.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to pan 2.5 degrees right."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "pan_up",
-            "description": "Pans the agent's camera 2.5 degrees upward.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "pan_up",
+        "description": "Pans the agent's camera upward by (units × 2.5) degrees.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to pan 2.5 degrees upward."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
     {
         "type": "function",
         "function": {
-            "name": "pan_down",
-            "description": "Pans the agent's camera 2.5 degrees downward.",
-            "parameters": {
-                "type": "object",
-                "properties": {},
-                "required": [],
-                "additionalProperties": False
+        "name": "pan_down",
+        "description": "Pans the agent's camera downward by (units × 2.5) degrees.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+            "units": {
+                "type": "integer",
+                "description": "Number of times to pan 2.5 degrees downward."
+            }
             },
-            "strict": True
+            "required": ["units"],
+            "additionalProperties": False
+        },
+        "strict": True
         }
     },
+
     {
         "type": "function",
         "function": {
@@ -168,8 +209,13 @@ tools = [
             "description": "Extends the agent's left hand forward by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to move left hand by 0.025 units forward."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -182,8 +228,13 @@ tools = [
             "description": "Extends the agent's right hand forward by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to move right hand by 0.025 units forward."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -196,8 +247,13 @@ tools = [
             "description": "Pulls the agent's left hand backward by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to move left hand by 0.025 units backward."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -210,8 +266,13 @@ tools = [
             "description": "Pulls the agent's right hand backward by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to move right hand by 0.025 units backward."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -224,8 +285,13 @@ tools = [
             "description": "Raises the agent's left hand by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to raise left hand by 0.025 units."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -238,8 +304,13 @@ tools = [
             "description": "Raises the agent's right hand by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to raise right hand by 0.025 units."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -252,8 +323,13 @@ tools = [
             "description": "Lowers the agent's left hand by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to lower left hand by 0.025 units."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -266,8 +342,13 @@ tools = [
             "description": "Lowers the agent's right hand by 0.025 units.",
             "parameters": {
                 "type": "object",
-                "properties": {},
-                "required": [],
+                "properties": {
+                    "units": {
+                        "type": "integer",
+                        "description": "Number of times to lower right hand by 0.025 units."
+                    }
+                },
+                "required": ["units"],
                 "additionalProperties": False
             },
             "strict": True
@@ -300,23 +381,18 @@ tools = [
             },
             "strict": True
         }
-    }
+    },
 ]
 
 
 @app.post("/decide_action")
-async def decide_action(prompt: str = Form(...), file: UploadFile = File(...)):
-    image_bytes = await file.read()
-    base64_image = base64.b64encode(image_bytes).decode('utf-8')
-
+async def decide_action(prompt: str = Form(...)):
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}},
-                    {"type": "text", "text": prompt}
+                "content": [{"type": "text", "text": prompt}
                 ]
             }
         ],
