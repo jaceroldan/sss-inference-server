@@ -585,6 +585,59 @@ async def locate_object(prompt: str, file: UploadFile = File(...)):
 
     return result
 
+# from transformers import AutoProcessor, AutoModelForZeroShotObjectDetection
+
+# model_id = "IDEA-Research/grounding-dino-base"
+# device = "cuda" if torch.cuda.is_available() else "cpu"
+# processor = AutoProcessor.from_pretrained(model_id)
+# model = AutoModelForZeroShotObjectDetection.from_pretrained(model_id).to(device)
+from transformers import pipeline
+checkpoint = "google/owlv2-base-patch16-ensemble"
+detector = pipeline(model=checkpoint, task="zero-shot-object-detection")
+
+# @app.post("/locate-grounding-dino")
+# async def locate_grounding_dino(prompt: str = Form(...), file: UploadFile = File(...)):
+#     # Read and load image
+
+#     image_bytes = await file.read()
+#     image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+
+#     # "A box of cereal"
+#     print(prompt)
+#     text_labels = [[prompt]]
+
+#     inputs = processor(images=image, text=text_labels, return_tensors="pt").to(device)
+#     with torch.no_grad():
+#         outputs = model(**inputs) 
+
+#     # Locate object using Grounding DINO
+#     results = processor.post_process_grounded_object_detection(
+#         outputs, inputs.input_ids, box_threshold=0.4, text_threshold=0.3, target_sizes=[image.size[::-1]]
+#     )
+
+#     print(len(results), results)
+#     result = results[0]
+#     objects_detected = []
+#     for box, score, labels in zip(result["boxes"], result["scores"], result["labels"]):
+#         box = [round(i, 2) for i in box.tolist()]
+#         score = round(score.item(), 3)
+#         objects_detected.append((box, score, labels))
+#         print(f"Detected {labels} with confidence {score} at location {box}")
+    
+#     return objects_detected
+@app.post("/locate-owl-vit")
+async def locate_owl_vit(prompt: str = Form(...), file: UploadFile = File(...)):
+    # Read and load image
+    image_bytes = await file.read()
+    image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
+
+    predictions = detector(
+        image,
+        candidate_labels=[prompt],
+    )
+    print(predictions)
+    return predictions
+
 
 if __name__ == "__main__":
     import uvicorn
